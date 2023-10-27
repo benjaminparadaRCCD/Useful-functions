@@ -1,0 +1,71 @@
+//create array of primes from 2 to n<65000
+//factor random number using this primes array
+//put factor information into structure
+#include<iostream>
+#include<iomanip>
+#include<stdlib.h>
+#include<time.h>
+using namespace std;
+
+unsigned short int *genPrime(const int);	//generate an array of primes n<65000
+void outputArr(unsigned short int *,int);
+bool isPrime(unsigned short int *,int);
+
+int main(){
+	srand(static_cast<unsigned int>(time(0)));
+	
+	const int RANGE = 65000;
+	unsigned short int *primePtr;
+	int ptrSize;
+
+	primePtr = genPrime(RANGE);
+	ptrSize = primePtr[0];
+	outputArr(primePtr,ptrSize);
+
+	delete [] primePtr;
+	return 0;
+}
+unsigned short int *genPrime(const int RANGE){
+	int limit = RANGE%2?(RANGE+1)/2:RANGE/2;//odds are inclusive, evens are exclusive
+	unsigned short int *primes = new unsigned short int [limit];
+	bool isP = true;
+	int pSize=1;
+	primes[1]=2;	//primes[0] will hold the total number of primes
+	for(int i=3;i<=RANGE;i+=2){
+		isP=true;
+		for(int j=3; isP && j<i ;j+=2){
+			if(i%j==0)
+				isP=false;
+		}
+		if(isP){
+			primes[++pSize] = i;
+		}
+	}
+	primes[0] = pSize;
+	unsigned short int *newPrimes = new unsigned short int [pSize+1];
+	for(int i=0;i<pSize;i++){
+		newPrimes[i]=primes[i];
+	}
+	delete [] primes;
+	return newPrimes;
+}
+void outputArr(unsigned short int *arr,int size){
+	int perLine = 5;
+	int count = 0;
+	cout << "total size: " << arr[0] << endl;
+	for(int i=1;i<size;i++){
+		cout<<setw(6)<<arr[i];
+		if(++count >= perLine){
+			cout << endl;
+			count = 0;
+		}
+	}
+}
+bool isPrime(unsigned short int *primes,int n){
+	int size = primes[0];
+	for(int i=1;i<size;i++){
+		if(primes[i]==n)
+			return true;
+	}
+	return false;
+}
