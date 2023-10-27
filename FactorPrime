@@ -80,7 +80,7 @@ unsigned short int **factorToPrime(unsigned short int *primes,unsigned short int
 		}
 	}
 	unsigned short int **factors = new unsigned short int*[countPr+1];
-	for(int i=0;i<countPr;i++){
+	for(int i=0;i<countPr+1;i++){
 		factors[i] = new unsigned short int;
 	}
 	factors[0][0] = countPr; // [0][1] contains number n
