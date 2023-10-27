@@ -8,23 +8,35 @@
 using namespace std;
 
 unsigned short int *genPrime(const int);	//generate an array of primes n<65000
-void outputArr(unsigned short int *,int);
-bool isPrime(unsigned short int *,int);
-int **factorToPrimes(unsigned short int *,unsigned short int);	//row:prime || column:exponent
-int *findPrime(unsigned short int);
+void outputArr(unsigned short int *);
+void outputArr(unsigned short int **);
+bool isPrime(unsigned short int *,unsigned short int);
+unsigned short int **factorToPrimes(unsigned short int *,unsigned short int);	//row:prime || column:exponent
+void destroy(unsigned short int **);
 int main(){
 	srand(static_cast<unsigned int>(time(0)));
-	
+
 	const int RANGE = 65000;
 	unsigned short int *primePtr;
-	int ptrSize;
+	unsigned short int **factorPtr;
+	unsigned short int n = rand()%65000+1;
 
 	primePtr = genPrime(RANGE);
-	ptrSize = primePtr[0];
-	outputArr(primePtr,ptrSize);
+	outputArr(primePtr);
+
+	factorPtr = factorToPrimes(primePtr,n);
+	outputArr(factorPtr);
 
 	delete [] primePtr;
+	destroy(factorPtr);
 	return 0;
+}
+void destroy(unsigned short int **array){
+	int row = array[0][0];
+    for(int r=0;r<row;r++){
+        delete []array[r];
+    }
+    delete []array;
 }
 unsigned short int *genPrime(const int RANGE){
 	int limit = RANGE%2?(RANGE+1)/2:RANGE/2;//odds are inclusive, evens are exclusive
@@ -50,38 +62,73 @@ unsigned short int *genPrime(const int RANGE){
 	delete [] primes;
 	return newPrimes;
 }
-int **factorToPrime(unsigned short int *primes, unsigned short int n){
-	int countPr;
-	int countExp;
-	int size;
-	
-	int i=1;
-	while(n!=1){
-		if(n%primes[i] == 0){
-			while((n%=primes) == 0){
-				countPr++
+unsigned short int **factorToPrime(unsigned short int *primes,unsigned short int n){
+	int countPr=0;
+	int countExp=0;
+
+	unsigned short int tempN = n;
+	if(isPrime(primes,tempN))
+			countPr++;
+	else{
+		for(int i=1;tempN!=1 && i < primes[0];i++){
+			if(tempN%primes[i] == 0){
+				countPr++;
+				while(tempN%primes[i]==0){
+					tempN/=primes[i];
+				}
 			}
 		}
 	}
+	unsigned short int **factors = new unsigned short int*[countPr+1];
+	for(int i=0;i<countPr;i++){
+		factors[i] = new unsigned short int;
+	}
+	factors[0][0] = countPr; // [0][1] contains number n
+	factors[0][1] = n;
+	int row = 1;
+	for(int i=1;tempN!=1 && i< primes[0];i++){
+		if(isPrime(primes,tempN)){
+			factors[row][0]=tempN;
+			factors[row][1]=++countExp;
+			return factors;
+		}
+		else if(tempN%primes[i]==0){
+			factors[row][0] = primes[i];
+			while(tempN%primes[i]==0){
+				tempN/=primes[i];
+				countExp++;
+			}
+			factors[row][1] = countExp;
+			countExp = 0;
+			row++;
+		}
+	}
+	return factors;	//redundant
 }
 
-int *findPrime(unsigned short int n){
-	int countP=0;
-	
-}
-void outputArr(unsigned short int *arr,int size){
+void outputArr(unsigned short int *arr){
 	int perLine = 5;
 	int count = 0;
 	cout << "total size: " << arr[0] << endl;
-	for(int i=1;i<size;i++){
+	for(int i=1;i<arr[0];i++){
 		cout<<setw(6)<<arr[i];
 		if(++count >= perLine){
 			cout << endl;
 			count = 0;
 		}
 	}
+	return;
 }
-bool isPrime(unsigned short int *primes,int n){
+void outputArr(unsigned short int **arr){
+	cout << "Number of Primes: " << arr[0][0] << endl;
+	cout << "Factors of " << arr[0][1] << endl;
+	cout << "--------------------" << endl;
+	for(int i=1;i<arr[0][0];i++){
+		cout << arr[i][0] << "^" << arr[i][1] << endl;
+	}
+	return;
+}
+bool isPrime(unsigned short int *primes,unsigned short int n){
 	int size = primes[0];
 	for(int i=1;i<size;i++){
 		if(primes[i]==n)
