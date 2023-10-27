@@ -10,7 +10,8 @@ using namespace std;
 unsigned short int *genPrime(const int);	//generate an array of primes n<65000
 void outputArr(unsigned short int *,int);
 bool isPrime(unsigned short int *,int);
-
+int **factorToPrimes(unsigned short int *,unsigned short int);	//row:prime || column:exponent
+int *findPrime(unsigned short int);
 int main(){
 	srand(static_cast<unsigned int>(time(0)));
 	
@@ -48,6 +49,25 @@ unsigned short int *genPrime(const int RANGE){
 	}
 	delete [] primes;
 	return newPrimes;
+}
+int **factorToPrime(unsigned short int *primes, unsigned short int n){
+	int countPr;
+	int countExp;
+	int size;
+	
+	int i=1;
+	while(n!=1){
+		if(n%primes[i] == 0){
+			while((n%=primes) == 0){
+				countPr++
+			}
+		}
+	}
+}
+
+int *findPrime(unsigned short int n){
+	int countP=0;
+	
 }
 void outputArr(unsigned short int *arr,int size){
 	int perLine = 5;
