@@ -10,7 +10,6 @@ using namespace std;
 unsigned short int *genPrime(const int);	//generate an array of primes n<65000
 void outputArr(unsigned short int *);
 void outputArr(unsigned short int **);
-bool isPrime(unsigned short int *,unsigned short int);
 unsigned short int **factorToPrimes(unsigned short int *,unsigned short int);	//row:prime || column:exponent
 void destroy(unsigned short int **);
 int main(){
@@ -63,12 +62,21 @@ unsigned short int *genPrime(const int RANGE){
 	return newPrimes;
 }
 unsigned short int **factorToPrime(unsigned short int *primes,unsigned short int n){
-	int countPr=0;
+bool isPrime(unsigned short int *primes,unsigned short int n){
+	int size = primes[0];
+	for(int i=1;i<size;i++){
+		if(primes[i]==n)
+			return true;
+	}
+	return false;
+};
+
+        int countPr=0;
 	int countExp=0;
 
 	unsigned short int tempN = n;
-	if(isPrime(primes,tempN))
-			countPr++;
+	if(isPrime(primes,n)
+	   countPr++;
 	else{
 		for(int i=1;tempN!=1 && i < primes[0];i++){
 			if(tempN%primes[i] == 0){
@@ -127,12 +135,4 @@ void outputArr(unsigned short int **arr){
 		cout << arr[i][0] << "^" << arr[i][1] << endl;
 	}
 	return;
-}
-bool isPrime(unsigned short int *primes,unsigned short int n){
-	int size = primes[0];
-	for(int i=1;i<size;i++){
-		if(primes[i]==n)
-			return true;
-	}
-	return false;
 }
